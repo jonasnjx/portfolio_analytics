@@ -1,0 +1,13 @@
+{
+  "name": "portfolio_analytics",
+  "version": "1.0.0",
+  "description": "Event pipeline and analytics backend for Jonas Ng's portfolio",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@upstash/qstash": "^2.7.0",
+    "@upstash/redis": "^1.34.0",
+    "@upstash/ratelimit": "^2.0.0"
+  }
+}

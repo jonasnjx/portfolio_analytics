@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/track",   "destination": "/api/track" },
+    { "source": "/consume", "destination": "/api/consume" },
+    { "source": "/stats",   "destination": "/api/stats" },
+    { "source": "/health",  "destination": "/api/health" }
+  ]
+}
