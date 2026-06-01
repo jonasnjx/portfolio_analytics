@@ -6,7 +6,7 @@ const redis = new Redis({
 });
 
 const OBJECTS     = ['resume','arcade','bookshelf','telephone','sofa','clock','door','assistant'];
-const PAGES       = ['/','home','/resume','/projects','/casestudies','/connect','/dashboard'];
+const PAGES       = ['/home','/resume','/projects','/casestudies','/connect','/dashboard'];
 const CHARACTERS  = ['spider','wonder','hulk'];
 const EVENT_TYPES = ['page_view','room_enter','object_interact','baymax_ask','character_switch'];
 const CACHE_TTL   = 30; // seconds
