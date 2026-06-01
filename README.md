@@ -7,8 +7,8 @@ Event pipeline and analytics backend for my portfolio site. Tracks visitor inter
 ```
   Visitor clicks something on portfolio_site
           |
-          | Browser fires POST /track in the background
-          | (visitor doesn't wait for a response)
+          | Browser sends POST /track in the background
+          | 
           |
   ┌───────▼──────────────────────────────┐
   │  /api/track                           │
@@ -23,9 +23,7 @@ Event pipeline and analytics backend for my portfolio site. Tracks visitor inter
   ┌───────▼──────────────────────────────┐
   │  /api/consume                         │
   │  - Confirm request came from QStash   │
-  │    (not a fake/spoofed request)       │
   │  - Add 1 to the right Redis counter   │
-  │    e.g. room_enter: 4 → 5            │
   └───────┬──────────────────────────────┘
           |
   Upstash Redis stores all the counters
