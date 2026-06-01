@@ -1,35 +1,41 @@
 # portfolio_analytics
 
-Event pipeline and analytics backend for Jonas Ng's portfolio. Tracks visitor interactions across the 3D room and classic site, aggregates them via Upstash QStash and Redis, and exposes a stats API for the public dashboard.
+Event pipeline and analytics backend for my portfolio site. Tracks visitor interactions across the 3D room and classic site, aggregates them via Upstash QStash and Redis, and exposes a stats API for the public dashboard.
 
 ## Architecture
 
 ```
-  portfolio_site (browser)
+  Visitor clicks something on portfolio_site
           |
-   POST /track  (fire-and-forget via sendBeacon)
+          | Browser fires POST /track in the background
+          | (visitor doesn't wait for a response)
           |
-  ┌───────▼────────┐
-  │  /api/track     │
-  │  validate event │
-  │  rate limit IP  │
-  └───────┬────────┘
-          │  publish
-          ▼
-  Upstash QStash
-          │  deliver webhook
-          ▼
-  ┌───────▼────────┐
-  │  /api/consume   │
-  │  verify sig     │
-  │  incr Redis     │
-  └───────┬────────┘
-          │
-  Upstash Redis  (pa: namespace, shared db)
-          │
-   GET /stats
-          │
-  /dashboard page (portfolio_site)
+  ┌───────▼──────────────────────────────┐
+  │  /api/track                           │
+  │  - Reject unknown event types         │
+  │  - Block IPs sending too many events  │
+  │  - Hand event to QStash queue         │
+  └───────┬──────────────────────────────┘
+          |
+          | QStash holds the event and
+          | calls /api/consume automatically
+          |
+  ┌───────▼──────────────────────────────┐
+  │  /api/consume                         │
+  │  - Confirm request came from QStash   │
+  │    (not a fake/spoofed request)       │
+  │  - Add 1 to the right Redis counter   │
+  │    e.g. room_enter: 4 → 5            │
+  └───────┬──────────────────────────────┘
+          |
+  Upstash Redis stores all the counters
+  (pa:total:room_enter, pa:obj:resume ...)
+          |
+          | Dashboard page calls GET /stats
+          | every 30 seconds
+          |
+  /dashboard page reads the totals
+  and displays them with Chart.js
 ```
 
 ## Endpoints
@@ -84,6 +90,4 @@ Set all env vars in Vercel project settings. After first deploy, update CONSUME_
 
 ## Notes
 
-- All analytics keys use `pa:` prefix to avoid collision with `assistant:` keys in the shared Redis db
-- Events are fire-and-forget. Counts are approximate (no retry on failure by design)
 - Upstash QStash is used instead of Kafka for serverless compatibility
