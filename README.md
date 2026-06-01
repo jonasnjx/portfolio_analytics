@@ -74,10 +74,6 @@ CONSUME_URL=https://your-deployment.vercel.app/consume
 IP_SALT=any-random-string
 ```
 
-- QStash keys: https://console.upstash.com (QStash tab)
-- Redis keys: https://console.upstash.com (Redis tab, same db as portfolio_ai_assistant)
-- Set CONSUME_URL after first deploy
-
 ## Deployment
 
 ```bash
